@@ -18,10 +18,35 @@ router.get("/users/:id", async (req, res) => {
   else res.sendStatus(404);
 });
 
-router.post("/users", async (req, res) => {});
+router.post("/users", async (req, res) => {
+  const user = await UserRepo.insert(req.body);
 
-router.put("/users/:id", async (req, res) => {});
+  res.status(201).send(user);
+});
 
-router.delete("/users/:id", async (req, res) => {});
+router.put("/users/:id", async (req, res) => {
+  const {
+    params: { id },
+    body: { username, bio },
+  } = req;
+  const user = await UserRepo.update(id, username, bio);
+
+  if (user) {
+    res.send(user);
+  } else res.sendStatus(404);
+});
+
+router.delete("/users/:id", async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const user = await UserRepo.delete(id);
+
+  if (user) {
+    res.send(user);
+  } else {
+    res.sendStatus(404);
+  }
+});
 
 module.exports = router;
